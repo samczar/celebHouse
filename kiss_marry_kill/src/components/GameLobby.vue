@@ -10,7 +10,7 @@
     </ul>
 
     <Feedback :kiss="kiss" :marry="marry" :kill="kill" />
-    <p class="error">Error: {{error}}</p>
+    <p class="error">{{error}}</p>
     <Button :title="btnTitle" :eventHandler="eventHandler" />
   </div>
 </template>
@@ -78,7 +78,7 @@ export default {
         this.kill = {}
         this.error = ' '
       } else {
-        this.error = 'Select Kiss, Marry , Kill'
+        this.error = 'Error: Select Kiss, Marry , Kill'
       }
     }
   },

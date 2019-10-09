@@ -36,7 +36,7 @@ export default {
         this.error = ''
 
       } else {
-        this.error = 'input a female name'
+        this.error = 'Error: input a female name'
       }
 
     },
