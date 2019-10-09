@@ -1,9 +1,9 @@
 <template>
   <div>
     <p>feedback</p>
-    <p class="kiss">Kiss: {{getKissName.name}}</p>
-    <p class="marry">Marry: {{getMarryName.name}}</p>
-    <p class="kill">Kill: {{getKillName.name}}</p>
+    <span class="kiss">Kiss: {{getKissName.name}}</span>
+    <span class="marry">Marry: {{getMarryName.name}}</span>
+    <span class="kill">Kill: {{getKillName.name}}</span>
   </div>
 </template>
 <script>
@@ -38,6 +38,9 @@ export default {
 <style lang="scss" scoped>
 p {
   color: white;
+}
+span {
+  margin: 0.5rem;
 }
 .kiss {
   color: gold;
