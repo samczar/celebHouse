@@ -11,7 +11,11 @@
 
     <Feedback :kiss="kiss" :marry="marry" :kill="kill" />
     <p class="error">{{error}}</p>
-    <Button :title="btnTitle" :eventHandler="eventHandler" />
+    <Button :title="btnNext" :eventHandler="eventHandlerNext" />
+    <Button :title="btnPrev" :eventHandler="eventHandlerPrev" />
+    <Button :title="btnChange" :eventHandler="eventHandlerChange" />
+    <Button :title="btnReset" :eventHandler="eventHandlerReset" />
+    <Button :title="btnEnd" :eventHandler="eventHandlerEnd" />
   </div>
 </template>
 
@@ -24,11 +28,13 @@ import Feedback from './Feeback'
 
 export default {
   name: 'gameLobby',
+
   components: {
     Game,
     Button,
     Feedback
   },
+
   data() {
     return {
       baseUrl: 'http://localhost:3000',
@@ -39,9 +45,15 @@ export default {
       marry: {},
       kill: {},
       analysis: [],
-      btnTitle: 'Play Next',
+      btnNext: 'Play Next',
+      btnPrev: 'Play Prev',
+      btnChange: 'Rechoose',
+      btnReset: 'Reset Game',
+      btnEnd: 'End Game',
       player: sessionStorage.getItem('playerName'),
       count: sessionStorage.getItem('round') || 1,
+      resultData: JSON.parse(sessionStorage.getItem('ResultHolder' + this.count)) || [],
+      alertMessage: 'This Feature is Coming Soon.',
       error: ''
 
     }
@@ -50,41 +62,97 @@ export default {
 
     async getCeleb() {
       const response = await axios.get(`${this.baseUrl}/${this.api}`)
-      this.celebList = response.data
+      const convertedAPI = JSON.parse(sessionStorage.getItem('loadedData' + this.count))
+      if (sessionStorage.getItem('loadedData' + this.count) === null) {
+        this.celebList = response.data
+        sessionStorage.setItem('loadedData' + this.count, JSON.stringify(this.celebList))
+      } else {
+        this.celebList = convertedAPI
+      }
     },
+
     selectCeleb(event) {
       this.$emit('selectedCeleb', event)
       this.result.add(event)
-      const deconstructResult = [...this.result]
-      this.kiss = Object.entries(deconstructResult)[0][1]
-      this.marry = Object.entries(deconstructResult)[1][1]
-      this.kill = Object.entries(deconstructResult)[2][1]
-
+      this.resultData = [...this.result]
+      if (sessionStorage.getItem('ResultHolder' + this.count !== null)) {
+        this.resultData = JSON.parse(sessionStorage.getItem('ResultHolder' + this.count))
+      } else {
+        sessionStorage.setItem('ResultHolder' + this.count, JSON.stringify(this.resultData))
+      }
+      this.kiss = Object.entries(this.resultData)[0][1]
+      this.marry = Object.entries(this.resultData)[1][1]
+      this.kill = Object.entries(this.resultData)[2][1]
     },
+
     setRound() {
       sessionStorage.setItem('round', this.count)
     },
-    eventHandler(e) {
+
+    eventHandlerNext(e) {
       e.preventDefault()
       if (Object.keys(this.kiss).length !== 0 &&
         Object.keys(this.marry).length !== 0 &&
         Object.keys(this.kill).length !== 0) {
         this.count++
         this.setRound()
-        new Request(this.getCeleb())
-        this.result = new Set()
-        this.kiss = {}
-        this.marry = {}
-        this.kill = {}
         this.error = ' '
+        if (sessionStorage.getItem('ResultHolder' + this.count) === null) {
+          new Request(this.getCeleb())
+          this.result = new Set()
+          this.kiss = {}
+          this.marry = {}
+          this.kill = {}
+        } else {
+          new Request(this.getCeleb())
+          this.loadFeeback()
+          this.result = JSON.parse(sessionStorage.getItem('ResultHolder' + this.count))
+        }
       } else {
         this.error = 'Error: Select Kiss, Marry , Kill'
       }
-    }
+    },
+
+    eventHandlerChange(e) {
+      e.preventDefault()
+      this.kill = {}
+      this.marry = {}
+      this.kiss = {}
+      sessionStorage.removeItem(`ResultHolder${this.count}`)
+      this.result = new Set()
+    },
+
+    eventHandlerPrev(e) {
+      e.preventDefault()
+      this.count--
+      this.count < 1 ? this.count = 1 : this.count
+      this.celebList = JSON.parse(sessionStorage.getItem('loadedData' + this.count))
+      this.result = JSON.parse(sessionStorage.getItem('ResultHolder' + this.count))
+      this.loadFeeback()
+    },
+
+    eventHandlerEnd(e) {
+      e.preventDefault()
+      alert(this.alertMessage)
+    },
+
+    eventHandlerReset(e) {
+      e.preventDefault()
+      sessionStorage.clear();
+      this.$router.go({ path: this.$router.push('/home') })
+    },
+
+    loadFeeback() {
+      this.resultData = JSON.parse(sessionStorage.getItem('ResultHolder' + this.count))
+      this.kiss = Object.entries(this.resultData)[0][1]
+      this.marry = Object.entries(this.resultData)[1][1]
+      this.kill = Object.entries(this.resultData)[2][1]
+    },
   },
   created() {
     this.getCeleb()
     this.setRound()
+    this.loadFeeback()
   }
 }
 </script>
