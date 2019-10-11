@@ -15,11 +15,15 @@ export default {
   }
 
 }
-
-
 </script>
 
 <style lang="scss" scoped>
+img {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.3;
+  }
+}
 ul {
   li {
     list-style-type: none;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Welcome To Kiss Marry Kill</h1>For Female Select
-    <button @click="selectMale">Male</button>
+    <button class="button" @click="selectMale">Male</button>
     For Male Select
     <button @click="selectFemale">Female</button>
     <br />Enter Your Name:
@@ -60,5 +60,9 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style lang="scss" scoped>
+.button {
+  cursor: pointer;
+}
+</style>>
+

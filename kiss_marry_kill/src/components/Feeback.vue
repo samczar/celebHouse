@@ -1,37 +1,18 @@
 <template>
   <div>
     <p>feedback</p>
-    <span class="kiss">Kiss: {{getKissName.name}}</span>
-    <span class="marry">Marry: {{getMarryName.name}}</span>
-    <span class="kill">Kill: {{getKillName.name}}</span>
+    <span class="kiss">Kiss: {{kiss}}</span>
+    <span class="marry">Marry: {{marry}}</span>
+    <span class="kill">Kill: {{kill}}</span>
   </div>
 </template>
 <script>
 export default {
   name: 'feedback',
   props: {
-    kiss: Object,
-    marry: Object,
-    kill: Object
-  },
-  data() {
-    return {
-      dataKiss: '',
-      dataMarry: '',
-      dataKill: ''
-    }
-  },
-  computed: {
-    getKissName() {
-      return { ...this.dataKiss, name: this.kiss['name'] }
-    },
-    getMarryName() {
-      return { ...this.dataMarry, name: this.marry['name'] }
-    },
-    getKillName() {
-      return { ...this.dataKill, name: this.kill['name'] }
-    }
-
+    kiss: String,
+    marry: String,
+    kill: String
   }
 }
 </script>

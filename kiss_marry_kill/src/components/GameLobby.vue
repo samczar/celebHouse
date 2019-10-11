@@ -41,9 +41,9 @@ export default {
       api: sessionStorage.getItem('api') || '',
       celebList: [],
       result: new Set(),
-      kiss: {},
-      marry: {},
-      kill: {},
+      kiss: '',
+      marry: '',
+      kill: '',
       analysis: [],
       btnNext: 'Play Next',
       btnPrev: 'Play Prev',
@@ -55,7 +55,6 @@ export default {
       resultData: JSON.parse(sessionStorage.getItem('ResultHolder' + this.count)) || [],
       alertMessage: 'This Feature is Coming Soon.',
       error: ''
-
     }
   },
   methods: {
@@ -80,29 +79,30 @@ export default {
       } else {
         sessionStorage.setItem('ResultHolder' + this.count, JSON.stringify(this.resultData))
       }
-      this.kiss = Object.entries(this.resultData)[0][1]
-      this.marry = Object.entries(this.resultData)[1][1]
-      this.kill = Object.entries(this.resultData)[2][1]
+      this.kiss = [...this.result].length === 3 ? Object.entries(this.resultData[0]).map((e) => { return e })[0][1] : ' '
+      this.marry = [...this.result].length === 3 ? Object.entries(this.resultData[1]).map((e) => { return e })[0][1] : ''
+      this.kill = [...this.result].length === 3 ? Object.entries(this.resultData[2]).map((e) => { return e })[0][1] : ''
     },
 
     setRound() {
       sessionStorage.setItem('round', this.count)
+
     },
 
     eventHandlerNext(e) {
       e.preventDefault()
-      if (Object.keys(this.kiss).length !== 0 &&
-        Object.keys(this.marry).length !== 0 &&
-        Object.keys(this.kill).length !== 0) {
+      if (this.kiss !== '' &&
+        this.marry !== '' &&
+        this.kill !== '') {
         this.count++
         this.setRound()
         this.error = ' '
         if (sessionStorage.getItem('ResultHolder' + this.count) === null) {
           new Request(this.getCeleb())
           this.result = new Set()
-          this.kiss = {}
-          this.marry = {}
-          this.kill = {}
+          this.kiss = ''
+          this.marry = ''
+          this.kill = ''
         } else {
           new Request(this.getCeleb())
           this.loadFeeback()
@@ -115,9 +115,9 @@ export default {
 
     eventHandlerChange(e) {
       e.preventDefault()
-      this.kill = {}
-      this.marry = {}
-      this.kiss = {}
+      this.kill = ''
+      this.marry = ''
+      this.kiss = ''
       sessionStorage.removeItem(`ResultHolder${this.count}`)
       this.result = new Set()
     },
@@ -144,9 +144,10 @@ export default {
 
     loadFeeback() {
       this.resultData = JSON.parse(sessionStorage.getItem('ResultHolder' + this.count))
-      this.kiss = Object.entries(this.resultData)[0][1]
-      this.marry = Object.entries(this.resultData)[1][1]
-      this.kill = Object.entries(this.resultData)[2][1]
+      this.kiss = [...this.result].length === 3 ? Object.entries(this.resultData[0]).map((e) => { return e })[0][1] : ' '
+      this.marry = [...this.result].length === 3 ? Object.entries(this.resultData[1]).map((e) => { return e })[0][1] : ''
+      this.kill = [...this.result].length === 3 ? Object.entries(this.resultData[2]).map((e) => { return e })[0][1] : ''
+
     },
   },
   created() {
